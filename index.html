@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🎬 Kino-Kalender 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@400;600;700&family=Barlow+Condensed:ital,wght@0,700;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --gold: #FFD700;
+    --red: #C0392B;
+    --dark: #0A0A0F;
+    --card-bg: #111118;
+    --text: #E8E8F0;
+    --muted: #888899;
+    --accent: #FF4500;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--dark);
+    color: var(--text);
+    font-family: 'Barlow', sans-serif;
+    min-height: 100vh;
+    background-image:
+      radial-gradient(ellipse at 20% 10%, rgba(192,57,43,0.12) 0%, transparent 50%),
+      radial-gradient(ellipse at 80% 90%, rgba(255,215,0,0.07) 0%, transparent 50%);
+  }
+
+  /* HEADER */
+  .header {
+    text-align: center;
+    padding: 48px 20px 32px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .header::before {
+    content: '🎬';
+    position: absolute;
+    font-size: 300px;
+    opacity: 0.03;
+    top: -60px;
+    left: 50%;
+    transform: translateX(-50%);
+    pointer-events: none;
+  }
+
+  .header-eyebrow {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-style: italic;
+    color: var(--gold);
+    letter-spacing: 6px;
+    font-size: 14px;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+    animation: fadeUp 0.6s ease both;
+  }
+
+  .header-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(52px, 14vw, 100px);
+    line-height: 0.9;
+    letter-spacing: 4px;
+    background: linear-gradient(135deg, #fff 30%, var(--gold) 70%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: fadeUp 0.6s 0.1s ease both;
+  }
+
+  .header-sub {
+    font-size: 16px;
+    color: var(--muted);
+    margin-top: 16px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    animation: fadeUp 0.6s 0.2s ease both;
+  }
+
+  .divider {
+    width: 60px;
+    height: 3px;
+    background: linear-gradient(90deg, var(--red), var(--gold));
+    margin: 24px auto;
+    border-radius: 2px;
+  }
+
+  /* TIMELINE CONTAINER */
+  .timeline {
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 0 20px 60px;
+    position: relative;
+  }
+
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: linear-gradient(180deg,
+      transparent 0%,
+      rgba(255,215,0,0.3) 10%,
+      rgba(255,215,0,0.15) 90%,
+      transparent 100%);
+    transform: translateX(-50%);
+  }
+
+  /* MONTH LABEL */
+  .month-label {
+    text-align: center;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 13px;
+    letter-spacing: 5px;
+    color: var(--muted);
+    padding: 12px 0 4px;
+    position: relative;
+  }
+
+  .month-label::before, .month-label::after {
+    content: '—';
+    margin: 0 10px;
+    opacity: 0.4;
+  }
+
+  /* MOVIE CARD */
+  .movie-card {
+    display: flex;
+    gap: 0;
+    margin: 18px 0;
+    position: relative;
+    animation: cardIn 0.5s ease both;
+  }
+
+  .movie-card:nth-child(odd) { flex-direction: row; }
+  .movie-card:nth-child(even) { flex-direction: row-reverse; }
+
+  .movie-card:nth-child(odd) .card-inner { margin-right: 36px; }
+  .movie-card:nth-child(even) .card-inner { margin-left: 36px; }
+
+  /* CENTER DOT */
+  .timeline-dot {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 16px;
+    height: 16px;
+    background: var(--gold);
+    border-radius: 50%;
+    border: 3px solid var(--dark);
+    box-shadow: 0 0 0 2px var(--gold), 0 0 20px rgba(255,215,0,0.5);
+    z-index: 10;
+    flex-shrink: 0;
+  }
+
+  .card-inner {
+    flex: 1;
+    background: var(--card-bg);
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid rgba(255,255,255,0.07);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    position: relative;
+  }
+
+  .card-inner:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 16px 48px rgba(0,0,0,0.7);
+  }
+
+  /* POSTER */
+  .poster {
+    width: 100%;
+    aspect-ratio: 2/3;
+    object-fit: cover;
+    display: block;
+    background: #1a1a22;
+  }
+
+  .poster-wrap {
+    width: 100%;
+    aspect-ratio: 2/3;
+    position: relative;
+    background: #1a1a22;
+    overflow: hidden;
+  }
+
+  .poster-wrap img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.4s ease;
+  }
+
+  .card-inner:hover .poster-wrap img {
+    transform: scale(1.04);
+  }
+
+  .poster-fallback {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: 48px;
+    gap: 12px;
+    color: var(--muted);
+    background: linear-gradient(135deg, #1a1a22 0%, #222230 100%);
+  }
+
+  .poster-fallback span {
+    font-size: 12px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    font-family: 'Barlow Condensed', sans-serif;
+  }
+
+  /* CARD CONTENT */
+  .card-content {
+    padding: 14px 16px 16px;
+    background: var(--card-bg);
+  }
+
+  .film-studio {
+    font-size: 10px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--gold);
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+
+  .film-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px;
+    letter-spacing: 1px;
+    line-height: 1;
+    color: #fff;
+    margin-bottom: 6px;
+  }
+
+  .film-date {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(192,57,43,0.2);
+    border: 1px solid rgba(192,57,43,0.4);
+    border-radius: 4px;
+    padding: 3px 8px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    color: #ff7b70;
+    margin-bottom: 8px;
+  }
+
+  .film-cast {
+    font-size: 11px;
+    color: var(--muted);
+    line-height: 1.5;
+    font-style: italic;
+  }
+
+  /* GENRE TAG */
+  .genre-tag {
+    display: inline-block;
+    font-size: 10px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--muted);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 3px;
+    padding: 2px 7px;
+    margin-top: 8px;
+  }
+
+  /* RATING STARS */
+  .hype-bar {
+    margin-top: 10px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .hype-label {
+    font-size: 9px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .hype-dots {
+    display: flex;
+    gap: 3px;
+  }
+
+  .hype-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--gold);
+    opacity: 0.2;
+  }
+
+  .hype-dot.active { opacity: 1; }
+
+  /* FOOTER */
+  .footer {
+    text-align: center;
+    padding: 32px 20px;
+    color: var(--muted);
+    font-size: 12px;
+    letter-spacing: 2px;
+    border-top: 1px solid rgba(255,255,255,0.05);
+  }
+
+  /* ANIMATIONS */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes cardIn {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .movie-card:nth-child(1) { animation-delay: 0.1s; }
+  .movie-card:nth-child(2) { animation-delay: 0.2s; }
+  .movie-card:nth-child(3) { animation-delay: 0.3s; }
+  .movie-card:nth-child(4) { animation-delay: 0.4s; }
+  .movie-card:nth-child(5) { animation-delay: 0.5s; }
+  .movie-card:nth-child(6) { animation-delay: 0.6s; }
+
+  /* MOBILE */
+  @media (max-width: 500px) {
+    .timeline::before { left: 20px; }
+    .movie-card, .movie-card:nth-child(even) { flex-direction: column; }
+    .movie-card:nth-child(odd) .card-inner,
+    .movie-card:nth-child(even) .card-inner { margin: 0 0 0 44px; }
+    .timeline-dot {
+      left: 20px;
+      top: 24px;
+      transform: translate(-50%, 0);
+    }
+    .film-title { font-size: 19px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-eyebrow">Das Kino-Jahr</div>
+  <div class="header-title">2026</div>
+  <div class="header-sub">Die größten Filme des Jahres</div>
+  <div class="divider"></div>
+</div>
+
+<div class="timeline">
+
+  <!-- MAI – MK2 -->
+  <div class="month-label">MAI</div>
+
+  <div class="movie-card">
+    <div class="timeline-dot"></div>
+    <div class="card-inner">
+      <div class="poster-wrap">
+        <div class="poster-fallback">☠️<span>Mortal Kombat II</span></div>
+        <img src="https://sm.ign.com/ign_de/photo/m/mortal-kom/mortal-kombat-2-first-look-at-karl-urbans-johnny-cage_acj6.jpg"
+             alt="Mortal Kombat II Poster"
+             onerror="this.style.display='none'"
+             onload="this.previousElementSibling.style.display='none'">
+      </div>
+      <div class="card-content">
+        <div class="film-studio">Warner Bros. · New Line Cinema</div>
+        <div class="film-title">Mortal Kombat II</div>
+        <div class="film-date">📅 8. Mai 2026</div>
+        <div class="film-cast">Karl Urban als Johnny Cage · Karl Urban, Josh Lawson, Lewis Tan, Tati Gabrielle</div>
+        <div class="genre-tag">Action · Fantasy · Martial Arts</div>
+        <div class="hype-bar">
+          <span class="hype-label">Hype</span>
+          <div class="hype-dots">
+            <div class="hype-dot active"></div>
+            <div class="hype-dot active"></div>
+            <div class="hype-dot active"></div>
+            <div class="hype-dot active"></div>
+            <div class="hype-dot"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MAI – MANDO -->
+  <div class="movie-card">
+    <div class="timeline-dot"></div>
+    <div class="card-inner">
+      <div class="poster-wrap">
+        <div class="poster-fallback">🪖<span>The Mandalorian & Grogu</span></div>
+        <img src="http://www.impawards.com/2026/posters/star_wars_the_mandalorian_and_grogu.jpg"
+             alt="The Mandalorian and Grogu Poster"
+             onerror="this.style.display='none'"
+             onload="this.previousElementSibling.style.display='none'">
+      </div>
+      <div class="card-content">
+        <div class="film-studio">Disney · Lucasfilm</div>
+        <div class="film-title">The Mandalorian & Grogu</div>
+        <div class="film-date">📅 22. Mai 2026</div>
+        <div class="film-cast">Pedro Pascal · Sigourney Weaver · Jeremy Allen White</div>
+        <div class="genre-tag">Star Wars · Action · Sci-Fi</div>
+        <div class="hype-bar">
+          <span class="hype-label">Hype</span>
+          <div class="hype-dots">
+            <div class="hype-dot active"></div>
+            <div class="hype-dot active"></div>
+            <div class="hype-dot active"></div>
+            <div class="hype-dot active"></div>
+            <div class="hype-dot active"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- JUNI – HE-MAN -->
+  <div class="month-label">JUNI</div>
+
+  <div class="movie-card">
+    <div class="timeline-dot"></div>
+    <div class="card-inner">
+      <div class="poster-wrap">
+        <div class="poster-fallback">⚡<span>Masters of the Universe</span></div>
+        <img src="http://www.impawards.com/2026/posters/masters_of_the_universe.jpg"
+             alt="Masters of the Universe Poster"
+             onerror="this.style.display='none'"
+             onload="this.previousElementSibling.style.display='none'">
+      </div>
+      <div class="card-content">
+        <div class="film-studio">Amazon MGM Studios · Mattel Films</div>
+        <div class="film-title">Masters of the Universe</div>
+        <div class="film-date">📅 5. Juni 2026</div>
+        <div class="film-cast">Nicholas Galitzine als He-Man · Jared Leto · Idris Elba · Camila Mendes</div>
+        <div class="genre-tag">Fantasy · Action · Abenteuer</div>
+        <div class="hype-bar">
+          <span class="hype-label">Hype</span>
+          <div class="hype-dots">
+            <div class="hype-dot active"></div>
+            <div class="hype-dot active"></div>
+            <div class="hype-dot active"></div>
+            <div class="hype-dot active"></div>
+            <div class="hype-dot"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- JULI – ODYSSEE -->
+  <div class="month-label">JULI</div>
+
+  <div class="movie-card">
+    <div class="timeline-dot"></div>
+    <div class="card-inner">
+      <div class="poster-wrap">
+        <div class="poster-fallback">🌊<span>Die Odyssee</span></div>
+        <img src="http://www.impawards.com/2026/posters/odyssey.jpg"
+             alt="Die Odyssee Poster"
+             onerror="this.style.display='none'"
+             onload="this.previousElementSibling.style.display='none'">
+      </div>
+      <div class="card-content">
+        <div class="film-studio">Universal Pictures · Syncopy</div>
+        <div class="film-title">Die Odyssee</div>
+        <div class="film-date">📅 16. Juli 2026</div>
+        <div class="film-cast">Matt Damon · Tom Holland · Anne Hathaway · Zendaya · Robert Pattinson</div>
+        <div class="genre-tag">Epos · Fantasy · Action · IMAX</div>
+        <div class="hype-bar">
+          <span class="hype-label">Hype</span>
+          <div class="hype-dots">
+            <div class="hype-dot active"></div>
+            <div class="hype-dot active"></div>
+            <div class="hype-dot active"></div>
+            <div class="hype-dot active"></div>
+            <div class="hype-dot active"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- OKTOBER – STREET FIGHTER -->
+  <div class="month-label">OKTOBER</div>
+
+  <div class="movie-card">
+    <div class="timeline-dot"></div>
+    <div class="card-inner">
+      <div class="poster-wrap">
+        <div class="poster-fallback">🥊<span>Street Fighter</span></div>
+        <img src="http://www.impawards.com/2026/posters/street_fighter.jpg"
+             alt="Street Fighter Poster"
+             onerror="this.style.display='none'"
+             onload="this.previousElementSibling.style.display='none'">
+      </div>
+      <div class="card-content">
+        <div class="film-studio">Paramount Pictures · Legendary</div>
+        <div class="film-title">Street Fighter</div>
+        <div class="film-date">📅 16. Oktober 2026</div>
+        <div class="film-cast">Noah Centineo · Andrew Koji · Jason Momoa · David Dastmalchian</div>
+        <div class="genre-tag">Action · Martial Arts · IMAX</div>
+        <div class="hype-bar">
+          <span class="hype-label">Hype</span>
+          <div class="hype-dots">
+            <div class="hype-dot active"></div>
+            <div class="hype-dot active"></div>
+            <div class="hype-dot active"></div>
+            <div class="hype-dot active"></div>
+            <div class="hype-dot"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DEZEMBER – DUNE 3 -->
+  <div class="month-label">DEZEMBER</div>
+
+  <div class="movie-card">
+    <div class="timeline-dot"></div>
+    <div class="card-inner">
+      <div class="poster-wrap">
+        <div class="poster-fallback">🏜️<span>Dune: Part Three</span></div>
+        <img src="http://www.impawards.com/2026/posters/dune_part_three.jpg"
+             alt="Dune: Part Three Poster"
+             onerror="this.style.display='none'"
+             onload="this.previousElementSibling.style.display='none'">
+      </div>
+      <div class="card-content">
+        <div class="film-studio">Warner Bros. · Legendary Entertainment</div>
+        <div class="film-title">Dune: Part Three</div>
+        <div class="film-date">📅 18. Dezember 2026</div>
+        <div class="film-cast">Timothée Chalamet · Zendaya · Florence Pugh · Robert Pattinson · Jason Momoa</div>
+        <div class="genre-tag">Sci-Fi · Epos · IMAX</div>
+        <div class="hype-bar">
+          <span class="hype-label">Hype</span>
+          <div class="hype-dots">
+            <div class="hype-dot active"></div>
+            <div class="hype-dot active"></div>
+            <div class="hype-dot active"></div>
+            <div class="hype-dot active"></div>
+            <div class="hype-dot active"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="footer">
+  🎬 KINO-KALENDER 2026 &nbsp;·&nbsp; Alle Termine ohne Gewähr
+</div>
+
+</body>
+</html>
